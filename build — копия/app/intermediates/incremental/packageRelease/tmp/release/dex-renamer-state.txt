@@ -1,0 +1,4 @@
+#Fri Dec 28 11:17:47 MSK 2018
+base.0=D\:\\visual_studio_code\\projects\\logining\\build\\app\\intermediates\\transforms\\dexMerger\\release\\0
+path.0=classes.dex
+renamed.0=classes.dex
