@@ -7,8 +7,7 @@ void main() {
     title: 'Login',
     home: LoginScreen(),
     routes: <String, WidgetBuilder>{
-      '/list': (_) => HomeScreen(
-          ),
+      '/list': (_) => HomeScreen(),
       '/login': (_) => LoginScreen(),
     },
   ));
