@@ -1,15 +1,9 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
+import 'package:logining/login/login.dart';
+import 'package:logining/login/pass.dart';
 
 class LoginScreen extends StatelessWidget {
-//   @override
-//   LoginScreenState createState() {
-//     return LoginScreenState();
-//   }
-// }
-
-// class LoginScreenState extends State<LoginScreen> {
-//   // bool _obscureText = true;
 
   @override
   Widget build(BuildContext context) {
@@ -32,8 +26,8 @@ class LoginScreen extends StatelessWidget {
               ),
               padding: EdgeInsets.fromLTRB(50, 0, 50, 40),
             ),
-            Login(),
-            Pass(),
+            LoginTextField(),
+            PassTextField(),
             Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
@@ -99,74 +93,6 @@ class LoginScreen extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class Pass extends StatefulWidget {
-  _PassState createState() => _PassState();
-}
-
-class _PassState extends State<Pass> {
-  bool _obscureText = true;
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.fromLTRB(25, 0, 50, 10),
-      child: TextFormField(
-        obscureText: _obscureText,
-        style: TextStyle(
-          color: Color(0xFF01579B),
-          fontSize: 18.0,
-        ),
-        decoration: InputDecoration(
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(30),
-          ),
-          hintText: 'Enter your password',
-          labelText: "Password",
-          icon: Padding(
-            padding: EdgeInsets.only(top: 15.0),
-            child: Icon(Icons.lock),
-          ),
-          suffixIcon: GestureDetector(
-            onTap: () {
-              setState(() {
-                _obscureText = !_obscureText;
-              });
-            },
-            child: Icon(
-              _obscureText ? Icons.visibility : Icons.visibility_off,
-              semanticLabel: _obscureText ? 'show password' : 'hide password',
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class Login extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.fromLTRB(25, 0, 50, 10),
-      child: TextFormField(
-        style: TextStyle(
-          color: Color(0xFF01579B),
-          fontSize: 18.0,
-        ),
-        decoration: InputDecoration(
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(30),
-            ),
-            hintText: 'Enter your login',
-            labelText: "Login",
-            icon: Padding(
-              padding: EdgeInsets.only(top: 20.0),
-              child: Icon(Icons.email),
-            )),
       ),
     );
   }
