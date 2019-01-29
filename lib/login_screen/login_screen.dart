@@ -67,7 +67,7 @@ class LoginScreen extends StatelessWidget {
                                   ],
                                 ),
                               );
-                              await Future.delayed(Duration(seconds: 3), () {
+                              await Future.delayed(Duration(seconds: 0), () {
                                 Navigator.of(context).pushNamedAndRemoveUntil(
                                     '/list', (Route<dynamic> route) => false);
                               });

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:logining/home_screen/list_sports.dart';
 import 'package:logining/home_screen/leagues_list.dart';
+import 'package:logining/home_screen/about_us.dart';
 
 class HomeScreen extends StatefulWidget {
   _HomeScreenState createState() => _HomeScreenState();
@@ -46,6 +47,28 @@ class _HomeScreenState extends State<HomeScreen> {
             }),
       ]),
       resizeToAvoidBottomPadding: false,
+      drawer: Drawer(
+        child: ListView(
+          children: <Widget>[
+           UserAccountsDrawerHeader(
+             accountName: Text('Andrey'),
+             accountEmail: Text('myletter@example.com'),
+            currentAccountPicture: Image(
+              image: AssetImage('images/logo.png'),
+              width: 70,
+              alignment: Alignment.topRight,
+            ),
+           ),
+            ListTile(
+              title: Text('About us'),
+              onTap: () {
+                Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (context) => AboutUs()));
+              },
+            ),
+          ],
+        ),
+      ),
       body: _children[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         onTap: onTabTapped,
