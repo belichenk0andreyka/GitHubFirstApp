@@ -10,7 +10,7 @@ class AccountScreen extends StatefulWidget {
 }
 
 class _AccountScreenState extends State<AccountScreen> {
-  Future<Null> imageSelectorGallery() async {
+  imageSelectorGallery() async {
     final File imageFile = await ImagePicker.pickImage(
       source: ImageSource.gallery,
     );
@@ -19,7 +19,7 @@ class _AccountScreenState extends State<AccountScreen> {
     });
   }
 
-  Future<Null> imageSelectorCamera() async {
+  imageSelectorCamera() async {
     final File imageFile = await ImagePicker.pickImage(
       source: ImageSource.camera,
     );
@@ -39,7 +39,6 @@ class _AccountScreenState extends State<AccountScreen> {
         body: ListView(children: <Widget>[
           Container(
             child: Form(
-              autovalidate: true,
               child: Column(children: <Widget>[
                 SizedBox(
                   height: 30,
@@ -108,25 +107,24 @@ class _AccountScreenState extends State<AccountScreen> {
               ),
             ),
           ),
-          Row(children: <Widget>[
-            Padding(
-              padding: EdgeInsets.fromLTRB(30, 5, 1, 5),
-              child: DropDown(),
-            ),
-            Padding(
-              padding: EdgeInsets.fromLTRB(25, 5, 5, 5),
-              child: RaisedButton(
-                color: Color(0xFF448AFF),
-                textColor: Color(0xFFFFFFFF),
-                child: const Text('Save'),
-                onPressed: () {
-                  Navigator.of(context).pushNamedAndRemoveUntil(
-                      '/list', (Route<dynamic> route) => false);
-                },
+          Row(
+           children: <Widget>[
+          Padding(
+              padding: EdgeInsets.fromLTRB(30, 5, 1, 5), child: DropDown(),
               ),
+          Padding(
+            padding: EdgeInsets.fromLTRB(25, 5, 5, 5),
+            child: RaisedButton(
+              color: Color(0xFF448AFF),
+              textColor: Color(0xFFFFFFFF),
+              child: const Text('Save'),
+              onPressed: (){
+                  Navigator.of(context).pushNamedAndRemoveUntil(
+                  '/list', (Route<dynamic> route) => false);
+              },
             ),
-          ]),
-        ]),
+          ),
+        ]),]),
       ),
     );
   }

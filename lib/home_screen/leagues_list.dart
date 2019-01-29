@@ -77,7 +77,7 @@ class LeaguesAviableState extends State<LeaguesAviable> {
                         : Padding(
                             padding: EdgeInsets.symmetric(
                                 vertical: 180, horizontal: 150),
-                            child: CircularProgressIndicator(),
+                            child: Text(''),
                           );
                   }))
         ]),
