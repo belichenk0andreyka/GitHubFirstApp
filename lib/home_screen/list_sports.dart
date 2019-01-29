@@ -8,66 +8,62 @@ class ListSports extends StatefulWidget {
 }
 
 class _ListSportsState extends State<ListSports> {
+  String url = 'https://www.thesportsdb.com/api/v1/json/1/all_sports.php';
+  List data;
 
-String url = 'https://www.thesportsdb.com/api/v1/json/1/all_sports.php';
-List data;
+  @override
+  void initState() {
+    super.initState();
+    this.getJsonData();
+  }
 
-@override
-void initState() {
-  super.initState();
-  this.getJsonData();
-}
+  Future<String> getJsonData() async {
+    var response = await http
+        .get(Uri.encodeFull(url), headers: {"Accept": "application/json"});
 
- Future<String>getJsonData() async{
-  var response = await http.get(
-    Uri.encodeFull(url),
-    headers: {"Accept":"application/json"}
-  );
+    print(response.body);
 
-  print(response.body);
-
-  setState(() {
+    setState(() {
       var convertDatatoJson = json.decode(response.body);
       data = convertDatatoJson['sports'];
     });
     return "Success";
-}
-
+  }
 
   @override
   Widget build(BuildContext context) {
-          return ListView.separated(
-            separatorBuilder: (context, index) => Divider(
-              color: Colors.black
-              ), 
-              
-      itemCount: data == null ? 0 : data.length,
-      itemBuilder: (BuildContext context, int index) {
-        return Container(
-          child: Center(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-               ListTile(
-                 title: Text(data[index]['strSport']),
-                  leading: Container(
-                    width: 150,
-                    height: 90,
-                    margin: EdgeInsets.fromLTRB(5, 65, 5, 65),
-                    child: Image.network(data[index]['strSportThumb']),
+    return ListView.separated(
+        separatorBuilder: (context, index) => Divider(color: Colors.black),
+        itemCount: data == null ? 0 : data.length,
+        itemBuilder: (BuildContext context, int index) {
+          return Container(
+            child: Center(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  ListTile(
+                    title: Text(data[index]['strSport']),
+                    leading: Container(
+                      width: 150,
+                      height: 90,
+                      margin: EdgeInsets.fromLTRB(5, 65, 5, 65),
+                      child: Image.network(data[index]['strSportThumb']),
                     ),
                     onTap: () {
-                      Navigator.push(context, MaterialPageRoute(
-                        builder: (BuildContext context) => SportPage(data[index]),
-                      ),);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (BuildContext context) =>
+                              SportPage(data[index]),
+                        ),
+                      );
                     },
-                    )],
-                    ),
-                    ),
-
-                    );
-          } 
-    );
+                  )
+                ],
+              ),
+            ),
+          );
+        });
   }
 }
 
@@ -76,34 +72,32 @@ class SportPage extends StatelessWidget {
   final data;
   @override
   Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(title:Text(data['strSport'])
-    ),
-    resizeToAvoidBottomPadding: false,
-    
-    body:SingleChildScrollView(
-      child: Container(  
-      
-      margin: EdgeInsets.all(10),
-      child: Column(
-        
-                children: <Widget>[
-                  
-                  Padding(
-                    padding: EdgeInsets.fromLTRB(20, 5, 20, 5),
-                    child: Image.network(data['strSportThumb']),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.fromLTRB(20, 5, 20, 5),
-                    child: Text(data['strSport']),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.fromLTRB(20, 5, 20, 5),
-                    child: Text(data['strSportDescription']),
-                  ),
-                ]
-      ), 
-    ), 
-    ),
-  );
-  
+        appBar: AppBar(title: Text(data['strSport'])),
+        resizeToAvoidBottomPadding: false,
+        body: SingleChildScrollView(
+          child: Container(
+            margin: EdgeInsets.all(10),
+            child: Column(children: <Widget>[
+              Padding(
+                padding: EdgeInsets.fromLTRB(20, 5, 20, 5),
+                child: Image.network(data['strSportThumb']),
+              ),
+              Padding(
+                padding: EdgeInsets.fromLTRB(20, 5, 20, 5),
+                child: Text(
+                  data['strSport'],
+                  style: TextStyle(fontSize: 20),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.fromLTRB(20, 5, 20, 5),
+                child: Text(
+                  data['strSportDescription'],
+                  style: TextStyle(fontSize: 14),
+                ),
+              ),
+            ]),
+          ),
+        ),
+      );
 }

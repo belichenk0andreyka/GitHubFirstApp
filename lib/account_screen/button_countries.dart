@@ -6,25 +6,25 @@ class DropDown extends StatefulWidget {
 }
 
 class _DropDownState extends State<DropDown> {
-
   final List<DropdownMenuItem<String>> _dropDownMenuItems = menuItems
-  .map(
-    (String value) => DropdownMenuItem<String>(
-      value:value,
-      child:Text(value),
-      ),
-      ).toList();
-String _choiseCountry;
+      .map(
+        (String value) => DropdownMenuItem<String>(
+              value: value,
+              child: Text(value),
+            ),
+      )
+      .toList();
+  String _choiseCountry;
   @override
   Widget build(BuildContext context) {
     return DropdownButton(
       value: _choiseCountry,
       hint: Text('Choise your counry'),
-      style: TextStyle(color:Color(0xFF448AFF)),
-      onChanged: ((String newValue){
+      style: TextStyle(color: Color(0xFF448AFF)),
+      onChanged: ((String newValue) {
         setState(() {
-                  _choiseCountry = newValue;
-                });
+          _choiseCountry = newValue;
+        });
       }),
       items: _dropDownMenuItems,
     );

@@ -108,24 +108,25 @@ class _AccountScreenState extends State<AccountScreen> {
               ),
             ),
           ),
-          Row(
-           children: <Widget>[
-          Padding(
-              padding: EdgeInsets.fromLTRB(30, 5, 1, 5), child: DropDown(),
-              ),
-          Padding(
-            padding: EdgeInsets.fromLTRB(25, 5, 5, 5),
-            child: RaisedButton(
-              color: Color(0xFF448AFF),
-              textColor: Color(0xFFFFFFFF),
-              child: const Text('Save'),
-              onPressed: (){
-                  Navigator.of(context).pushNamedAndRemoveUntil(
-                  '/list', (Route<dynamic> route) => false);
-              },
+          Row(children: <Widget>[
+            Padding(
+              padding: EdgeInsets.fromLTRB(30, 5, 1, 5),
+              child: DropDown(),
             ),
-          ),
-        ]),]),
+            Padding(
+              padding: EdgeInsets.fromLTRB(25, 5, 5, 5),
+              child: RaisedButton(
+                color: Color(0xFF448AFF),
+                textColor: Color(0xFFFFFFFF),
+                child: const Text('Save'),
+                onPressed: () {
+                  Navigator.of(context).pushNamedAndRemoveUntil(
+                      '/list', (Route<dynamic> route) => false);
+                },
+              ),
+            ),
+          ]),
+        ]),
       ),
     );
   }

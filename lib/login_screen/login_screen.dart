@@ -92,7 +92,7 @@ class LoginScreen extends StatelessWidget {
                           child: const Text('registration'),
                           onPressed: () {
                             Navigator.of(context).pushNamedAndRemoveUntil(
-                                    '/bs', (Route<dynamic> route) => false);
+                                '/bs', (Route<dynamic> route) => false);
                           },
                         ),
                       ),

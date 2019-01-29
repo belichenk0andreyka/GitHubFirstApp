@@ -5,23 +5,24 @@ import 'package:logining/home_screen/leagues_list.dart';
 class HomeScreen extends StatefulWidget {
   _HomeScreenState createState() => _HomeScreenState();
 }
+
 class _HomeScreenState extends State<HomeScreen> {
-int _currentIndex = 0;
+  int _currentIndex = 0;
   final List<Widget> _children = [
     ListSports(),
     LeaguesAviable(),
   ];
 
-  void onTabTapped(int index){
+  void onTabTapped(int index) {
     setState(() {
-          _currentIndex = index;
-        });
+      _currentIndex = index;
+    });
   }
-@override
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('flutter'), 
-       actions: <Widget>[
+      appBar: AppBar(title: Text('flutter'), actions: <Widget>[
         IconButton(
           icon: Icon(Icons.account_box),
           tooltip: 'Transition to avatar screen',
@@ -43,26 +44,21 @@ int _currentIndex = 0;
               Navigator.of(context).pushNamedAndRemoveUntil(
                   '/login', (Route<dynamic> route) => false);
             }),
-      ]
-      ),
+      ]),
+      resizeToAvoidBottomPadding: false,
       body: _children[_currentIndex],
-          bottomNavigationBar: BottomNavigationBar(
-            onTap: onTabTapped,
+      bottomNavigationBar: BottomNavigationBar(
+        onTap: onTabTapped,
         currentIndex: _currentIndex,
         fixedColor: Colors.black,
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: Icon(Icons.assignment), 
-            title: Text('List Sports')
-          ),
+              icon: Icon(Icons.assignment), title: Text('List Sports')),
           BottomNavigationBarItem(
-            icon: Icon(Icons.list), 
-            title: Text('Aviable Ligues')
-            ),
+              icon: Icon(Icons.list), title: Text('Aviable Ligues')),
         ],
       ),
-      
     );
   }
 }
-// 
+//
