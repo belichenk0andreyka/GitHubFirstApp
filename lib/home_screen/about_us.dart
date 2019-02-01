@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:location/location.dart' as LocationManager;
 
 class AboutUs extends StatefulWidget {
   _AboutUsState createState() => _AboutUsState();
 }
 
 class _AboutUsState extends State<AboutUs> {
-  GoogleMapController myController;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,9 +32,10 @@ class _AboutUsState extends State<AboutUs> {
               textAlign: TextAlign.center,
             ),
             onTap: () {
-              GoogleMap();
+              Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => GoogleMapScreen()));
             },
-          ),      
+          ),
         ],
       ),
     );
@@ -49,31 +51,77 @@ class _AboutUsState extends State<AboutUs> {
   }
 }
 
-class GoogleMap extends StatefulWidget {
-  _GoogleMapState createState() => _GoogleMapState();
+class GoogleMapScreen extends StatefulWidget {
+  @override
+  GoogleMapScreenState createState() => GoogleMapScreenState();
 }
 
-class _GoogleMapState extends State<GoogleMap> {
+class GoogleMapScreenState extends State<GoogleMapScreen> {
   GoogleMapController mapController;
+  
+  
+  void refresh() async {
+    final center = await getUserLocation();
+    mapController.addMarker(
+      MarkerOptions(),);
+    mapController.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
+        target: center == null ? LatLng(0, 0) : center, zoom: 8.0)));
+  }
+
+  Future<LatLng> getUserLocation() async {
+    var currentLocation = <String, double>{};
+    final location = LocationManager.Location();
+    try {
+      currentLocation = await location.getLocation();
+      final lat = currentLocation["latitude"];
+      final lng = currentLocation["longitude"];
+      final center = LatLng(lat, lng);
+      return center;
+    } on Exception {
+      currentLocation = null;
+      return null;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('GoogleMaps'),
+        title: Text('Map'),
+        backgroundColor: Colors.green[700],
       ),
-      body: GoogleMap(
-         onMapCreated: (GoogleMapController controller) {
-   mapController = controller;
- },
-         options: GoogleMapOptions(
-           trackCameraPosition: true,
-           cameraPosition: CameraPosition(
-             target: LatLng(49.988358, 36.232845),
-             zoom: 11.0,
-           ),
-         ),
-       ),
+      body: SingleChildScrollView(
+        child: Column(children: <Widget>[
+          Container(
+            height: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width,
+            child: GoogleMap(
+              onMapCreated: (GoogleMapController controller) {
+                mapController = controller;
+                refresh();
+                mapController.addMarker(
+                  MarkerOptions(
+                    position: LatLng(49.980719, 36.261454),
+                    infoWindowText: InfoWindowText('Our Office', ''),
+                  ),
+                );
+              },
+              options: GoogleMapOptions(
+                mapType: MapType.normal,
+                scrollGesturesEnabled: false,
+                tiltGesturesEnabled: true,
+                rotateGesturesEnabled: true,
+                myLocationEnabled: true,
+                compassEnabled: true,
+                cameraPosition: CameraPosition(
+                  target: LatLng(49.98081, 36.25272),
+                  zoom: 25.1,
+                ),
+              ),
+            ),
+          )
+        ]),
+      ),
     );
   }
 }
-

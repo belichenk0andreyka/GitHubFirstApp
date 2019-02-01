@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "936153514563",
+    "firebase_url": "https://sturdy-tine-230118.firebaseio.com",
+    "project_id": "sturdy-tine-230118",
+    "storage_bucket": "sturdy-tine-230118.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:936153514563:android:a036983163741353",
+        "android_client_info": {
+          "package_name": "com.example.logining"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "936153514563-mmqv7rr5ta499q3h7te5cq3hpv9g6ug7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCHaHtaZEyT9TiLfRWlz8G31LaOufyj6Jc"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

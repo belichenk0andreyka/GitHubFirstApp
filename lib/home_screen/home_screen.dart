@@ -1,18 +1,25 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:logining/home_screen/list_sports.dart';
 import 'package:logining/home_screen/leagues_list.dart';
 import 'package:logining/home_screen/about_us.dart';
 
 class HomeScreen extends StatefulWidget {
+  final FirebaseUser user;
+  const HomeScreen({Key key, this.user}): super(key: key);
+  @override
   _HomeScreenState createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
+
   final List<Widget> _children = [
     ListSports(),
     LeaguesAviable(),
   ];
+
+
 
   void onTabTapped(int index) {
     setState(() {
