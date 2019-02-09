@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:logining/home_screen/home_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 
 class LoginScreen extends StatefulWidget {
@@ -10,20 +11,56 @@ class LoginScreen extends StatefulWidget {
     return new LoginScreenState();
   }
 }
+enum LoginStatus{
+  notSignIn,
+  signIn,
+}
 
 class LoginScreenState extends State<LoginScreen> {
-  String _email, _password;
+  LoginStatus _loginStatus = LoginStatus.notSignIn;
+  var _email, _password;
   bool _obscureText = true;
 
 
-GoogleSignIn googleAuth = GoogleSignIn();
+
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final GoogleSignIn googleSignIn = GoogleSignIn();
+  TextEditingController email = new TextEditingController();
+  TextEditingController password = new TextEditingController();
+  SharedPreferences sharedPreferences;
+
+
+  savePref()async{
+   SharedPreferences preferences = await SharedPreferences.getInstance();
+   setState((){
+     preferences.setString('email', _email);
+     preferences.setString('password', _password);
+     preferences.commit();
+   }); 
+  }
+  var value;
+  getPref()async{
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    setState(() {
+      value = preferences.getString("email");
+      value = preferences.getString("password");
+
+      _loginStatus = value == null ? LoginStatus.notSignIn : LoginStatus.signIn;
+    });
+  }
+  @override
+  void initState(){
+    super.initState();
+    getPref();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
+    switch(_loginStatus){
+      case LoginStatus.notSignIn:
+        return Scaffold(
         appBar: AppBar(
           title: Text('Login'),
         ),
@@ -49,6 +86,7 @@ GoogleSignIn googleAuth = GoogleSignIn();
                   Padding(
                     padding: EdgeInsets.fromLTRB(25, 0, 50, 10),
                     child: TextFormField(
+                      controller: email,
                       validator: (email) {
                         if (email.isEmpty) {
                           return 'Provide an Email';
@@ -74,6 +112,7 @@ GoogleSignIn googleAuth = GoogleSignIn();
                   Padding(
                     padding: EdgeInsets.fromLTRB(25, 0, 50, 10),
                     child: TextFormField(
+                      controller: password,
                       validator: (password) {
                         if (password.isEmpty) {
                           return 'Provide an password';
@@ -122,25 +161,13 @@ GoogleSignIn googleAuth = GoogleSignIn();
                             color: Color(0xFFD50000),
                             textColor: Color(0xFFFFFFFF),
                             child: Text('Login with Google'),
-                            onPressed: (){
-                              googleAuth.signIn().then((result){
-                                result.authentication.then((googleKey){
-                                  FirebaseAuth.instance.signInWithGoogle(
-                                    idToken: googleKey.idToken,
-                                    accessToken: googleKey.accessToken
-                                  
-                                  ).then((signedInUser){
-                                    print('Signed in as ${signedInUser.displayName}');
-                                    Navigator.of(context).pushReplacementNamed('/list');
-                                  });
-                                }).catchError((onError){
-                                  print(onError);
-                                });
-                                }).catchError((onError){
-                                  print(onError);
+                            onPressed:(){ _signInGoogle().then((FirebaseUser user){
+                              print(user);
+                            }).catchError((onError){
+                              print(onError);
+                            });
                               
-                              });
-                            },
+                            }
                           ),
                             
                         ),
@@ -193,20 +220,52 @@ GoogleSignIn googleAuth = GoogleSignIn();
             ),
           ),
         ]),
-      ),
-    );
+      );
+        break;
+      case LoginStatus.signIn:
+        return HomeScreen();
+        break;
+    }
+    
   }
-
-void signIn() async {
-    if(_formKey.currentState.validate()){
-      _formKey.currentState.save();
-      try{
-        FirebaseUser user = await FirebaseAuth.instance.signInWithEmailAndPassword(email: _email, password: _password);
-        Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen(user: user)));
+Future<void> signIn() async {
+    final formState = _formKey.currentState;
+    if(formState.validate()) {
+      formState.save();
+      try {
+        FirebaseAuth.instance.signInWithEmailAndPassword(email: _email, password: _password); 
+        
+       _loginStatus = LoginStatus.signIn;
+      //  savePref();
+       Navigator.of(context).pushNamedAndRemoveUntil(
+                  '/list', (Route<dynamic> route) => false);
       }catch(e){
         print(e.message);
       }
     }
-  }
-  
 }
+Future<FirebaseUser> _signInGoogle() async{
+    GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
+    GoogleSignInAuthentication gSa =await googleSignInAccount.authentication;
+
+    FirebaseUser user = await _auth.signInWithGoogle(
+      idToken: gSa.idToken,
+      accessToken: gSa.accessToken
+      );
+      print('User Name : ${user.displayName}');
+      return Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen(user: user)));
+  }
+}
+// void signIn() async {
+//     if(_formKey.currentState.validate()){
+//       _formKey.currentState.save();
+//       try{
+//         FirebaseUser user = await FirebaseAuth.instance.signInWithEmailAndPassword(email: _email, password: _password);
+//         SharedPreferences pref = await SharedPreferences.getInstance();
+//         pref.setString("email", _email);
+//         Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen(user: user)));
+//       }catch(e){
+//         print(e.message);
+//       }
+//     }
+//   }
