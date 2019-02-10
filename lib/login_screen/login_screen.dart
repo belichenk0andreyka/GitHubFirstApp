@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:logining/home_screen/home_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:logining/home_screen/home_screen.dart';
+import 'dart:async';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -11,62 +11,26 @@ class LoginScreen extends StatefulWidget {
     return new LoginScreenState();
   }
 }
-enum LoginStatus{
-  notSignIn,
-  signIn,
-}
 
 class LoginScreenState extends State<LoginScreen> {
-  LoginStatus _loginStatus = LoginStatus.notSignIn;
-  var _email, _password;
   bool _obscureText = true;
-
-
-
-
+  String _email, _password;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn googleSignIn = GoogleSignIn();
-  TextEditingController email = new TextEditingController();
-  TextEditingController password = new TextEditingController();
+  final FirebaseAuth _auth = FirebaseAuth.instance;
   SharedPreferences sharedPreferences;
-
-
-  savePref()async{
-   SharedPreferences preferences = await SharedPreferences.getInstance();
-   setState((){
-     preferences.setString('email', _email);
-     preferences.setString('password', _password);
-     preferences.commit();
-   }); 
-  }
-  var value;
-  getPref()async{
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    setState(() {
-      value = preferences.getString("email");
-      value = preferences.getString("password");
-
-      _loginStatus = value == null ? LoginStatus.notSignIn : LoginStatus.signIn;
-    });
-  }
-  @override
-  void initState(){
-    super.initState();
-    getPref();
-  }
 
   @override
   Widget build(BuildContext context) {
-    switch(_loginStatus){
-      case LoginStatus.notSignIn:
-        return Scaffold(
+    return MaterialApp(
+      home: Scaffold(
         appBar: AppBar(
           title: Text('Login'),
         ),
         resizeToAvoidBottomPadding: false,
-        body: ListView(children: <Widget>[
-          Container(
+        body: ListView(
+          children: <Widget>[
+            Container(
             child: Form(
               key: _formKey,
               autovalidate: true,
@@ -78,15 +42,14 @@ class LoginScreenState extends State<LoginScreen> {
                   Padding(
                     child: Image.asset(
                       'images/logo.png',
-                      width: 100.0,
-                      height: 100.0,
+                      width: 90,
+                      height: 90,
                     ),
                     padding: EdgeInsets.fromLTRB(50, 0, 50, 40),
                   ),
-                  Padding(
+                    Padding(
                     padding: EdgeInsets.fromLTRB(25, 0, 50, 10),
                     child: TextFormField(
-                      controller: email,
                       validator: (email) {
                         if (email.isEmpty) {
                           return 'Provide an Email';
@@ -109,10 +72,9 @@ class LoginScreenState extends State<LoginScreen> {
                       onSaved: (email) => _email = email,
                     ),
                   ),
-                  Padding(
+Padding(
                     padding: EdgeInsets.fromLTRB(25, 0, 50, 10),
                     child: TextFormField(
-                      controller: password,
                       validator: (password) {
                         if (password.isEmpty) {
                           return 'Provide an password';
@@ -151,8 +113,8 @@ class LoginScreenState extends State<LoginScreen> {
                       ),
                       onSaved: (password) => _password = password,
                     ),
-                  ),
-                  Row(
+                    ),
+                    Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         Padding(
@@ -166,22 +128,27 @@ class LoginScreenState extends State<LoginScreen> {
                             }).catchError((onError){
                               print(onError);
                             });
-                              
+
                             }
                           ),
-                            
+
                         ),
-                        Padding(
+                    Padding(
                           padding: EdgeInsets.symmetric(horizontal: 10),
                           child: RaisedButton(
                             color: Color(0xFF448AFF),
                             textColor: Color(0xFFFFFFFF),
                             child: Text('Login'),
-                            onPressed: signIn,
-                          ),
+                            onPressed: ()async{
+                              signIn();
+                              sharedPreferences = await SharedPreferences.getInstance();
+                          sharedPreferences.setString("email", _email);
+                            }),
                         ),
-                  ]),
-                      Padding(
+                   
+                    
+                      ]),
+                    Padding(
                           padding:
                               EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                           child: FlatButton(
@@ -192,80 +159,58 @@ class LoginScreenState extends State<LoginScreen> {
                             },
                           ),
                         ),
-                  Row(
+                        Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       Padding(
-                        padding: EdgeInsets.fromLTRB(50, 70, 0, 10),
+                        padding: EdgeInsets.fromLTRB(50, 45, 0, 10),
                         child: Text(
                           'Still do not have an account ',
                           style: TextStyle(color: Color(0xFF9E9E9E)),
                         ),
                       ),
                       Padding(
-                        padding: EdgeInsets.fromLTRB(0, 70, 30, 10),
+                        padding: EdgeInsets.fromLTRB(0, 45, 30, 10),
                         child: FlatButton(
                           textColor: Color(0xFF448AFF),
                           child: Text('registration'),
                           onPressed: () {
                             Navigator.of(context).pushNamedAndRemoveUntil(
                                 '/registration', (Route<dynamic> route) => false);
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
+                          }))]),]
+                ),
               ),
-            ),
-          ),
-        ]),
-      );
-        break;
-      case LoginStatus.signIn:
-        return HomeScreen();
-        break;
-    }
-    
+            )
+          ],
+        ),
+      ),
+    );
   }
-Future<void> signIn() async {
+
+  Future<void> signIn() async {
     final formState = _formKey.currentState;
     if(formState.validate()) {
       formState.save();
       try {
-        FirebaseAuth.instance.signInWithEmailAndPassword(email: _email, password: _password); 
-        
-       _loginStatus = LoginStatus.signIn;
-      //  savePref();
-       Navigator.of(context).pushNamedAndRemoveUntil(
-                  '/list', (Route<dynamic> route) => false);
+        await FirebaseAuth.instance.signInWithEmailAndPassword(email: _email, password: _password);
+        Navigator.of(context).pushReplacementNamed('/list'); 
       }catch(e){
         print(e.message);
       }
     }
-}
-Future<FirebaseUser> _signInGoogle() async{
+  }
+
+  Future<FirebaseUser> _signInGoogle() async{
     GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
     GoogleSignInAuthentication gSa =await googleSignInAccount.authentication;
 
-    FirebaseUser user = await _auth.signInWithGoogle(
+    await _auth.signInWithGoogle(
       idToken: gSa.idToken,
       accessToken: gSa.accessToken
-      );
-      print('User Name : ${user.displayName}');
-      return Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen(user: user)));
+    );
+    return Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => HomeScreen()));
   }
 }
-// void signIn() async {
-//     if(_formKey.currentState.validate()){
-//       _formKey.currentState.save();
-//       try{
-//         FirebaseUser user = await FirebaseAuth.instance.signInWithEmailAndPassword(email: _email, password: _password);
-//         SharedPreferences pref = await SharedPreferences.getInstance();
-//         pref.setString("email", _email);
-//         Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen(user: user)));
-//       }catch(e){
-//         print(e.message);
-//       }
-//     }
-//   }
+
+
+

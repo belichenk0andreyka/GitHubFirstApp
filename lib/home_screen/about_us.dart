@@ -65,7 +65,7 @@ class GoogleMapScreenState extends State<GoogleMapScreen> {
     mapController.addMarker(
       MarkerOptions(),);
     mapController.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
-        target: center == null ? LatLng(0, 0) : center, zoom: 8.0)));
+        target: center == null ? LatLng(0, 0) : center, zoom: 13.0)));
   }
 
   Future<LatLng> getUserLocation() async {
@@ -115,7 +115,7 @@ class GoogleMapScreenState extends State<GoogleMapScreen> {
                 compassEnabled: true,
                 cameraPosition: CameraPosition(
                   target: LatLng(49.98081, 36.25272),
-                  zoom: 25.1,
+                  zoom: 10,
                 ),
               ),
             ),

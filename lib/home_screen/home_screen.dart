@@ -1,23 +1,32 @@
-import 'package:firebase_auth/firebase_auth.dart';
+// import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:logining/home_screen/list_sports.dart';
 import 'package:logining/home_screen/leagues_list.dart';
 import 'package:logining/home_screen/about_us.dart';
+import 'package:logining/login_screen/login_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 
 class HomeScreen extends StatefulWidget {
-  final FirebaseUser user;
-  const HomeScreen({Key key, this.user}): super(key: key);
+  // final FirebaseUser user;
+  // const HomeScreen({Key key, this.user}): super(key: key);
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
-
+SharedPreferences sharedPreferences;
   final List<Widget> _children = [
     ListSports(),
     LeaguesAviable(),
   ];
+  removeDataPreference() async {
+    sharedPreferences = await SharedPreferences.getInstance();
+    setState(() {
+      sharedPreferences.remove("email");
+    });
+  }
 
 
 
@@ -26,6 +35,7 @@ class _HomeScreenState extends State<HomeScreen> {
       _currentIndex = index;
     });
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -71,6 +81,16 @@ class _HomeScreenState extends State<HomeScreen> {
               onTap: () {
                 Navigator.of(context)
                     .push(MaterialPageRoute(builder: (context) => AboutUs()));
+              },
+            ),
+            ListTile(
+              title: Text('Log Out',
+              style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              onTap: () {
+                removeDataPreference();
+                Navigator.of(context)
+                    .pushReplacement(MaterialPageRoute(builder: (context) => LoginScreen()));
               },
             ),
           ],
